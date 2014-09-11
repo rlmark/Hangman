@@ -29,10 +29,10 @@ class BlankLetters
   attr_accessor :guess, :mystery_word, :mystery_length, :display_array
 
   def initialize(guess, mystery_word, mystery_length, display_array)
-    @guess = guess
-    @mystery_word = mystery_word
+    @guess          = guess
+    @mystery_word   = mystery_word
     @mystery_length = mystery_length
-    @display_array = display_array
+    @display_array  = display_array
   end
 
 
@@ -58,6 +58,8 @@ end
 # Total Letter Bank
 #######################
 
+# Should display the letter options to user, then subtract or color out used letters
+# Note, colorize doesn't appear to work because not using print/puts method...
 class LetterBank
   attr_accessor :unused_letters, :guesses
 
@@ -66,7 +68,15 @@ class LetterBank
   end
 
   def make_bank
-
+    @unused_letters = ("a".."z").to_a
+    @unused_letters.map.with_index do |letter, index|
+      if @guesses.include? letter
+        @unused_letters[index] = "__"
+      end
+    end
+    puts "Choose from these letters"
+    print @unused_letters
+    puts ""
   end
 end
 
@@ -96,7 +106,7 @@ class Turns
   attr_accessor :guesses, :mystery_word
 
   def initialize(guesses, mystery_word)
-    @guesses = guesses
+    @guesses      = guesses
     @mystery_word = mystery_word
   end
 
@@ -133,14 +143,18 @@ while turns > 0
   guess = gets.chomp.downcase
   guesses << guess
 
+  # Display remaining letter options.
+  letter_options = LetterBank.new(guesses)
+  letter_options.make_bank
+
   # Display Hangman image based on turns
 
-  # Display remaining letter options.
 
   # Creates blank slot and checks if user guess is right
   create_blanks = BlankLetters.new(guess, mystery_word, p1_input.mystery_length, display_array)
   create_blanks.display
 
+  # Need to add +1 function for turns. 
   turns -=1
   if (mystery_word - guesses).empty?
     puts ""
