@@ -1,19 +1,15 @@
 require 'colorize.rb'
 
-#######################
-# Hanging Man Image
-#######################
 
 #######################
 # Original Word
 #######################
 
 class OriginalWord
-  attr_accessor :mystery_word, :mystery_length
+  attr_accessor :mystery_word
 
   def initialize(mystery_word)
     @mystery_word = mystery_word
-    @mystery_length = mystery_word.length
   end
 end
 
@@ -24,22 +20,19 @@ end
 # The goal is to print out a series of hidden letters
 # and uncover them as user guesses
 
-# Maybe in future, have Blankletter Inherit from OriginalWord
 class BlankLetters
-  attr_accessor :guess, :mystery_word, :mystery_length, :display_array
+  attr_accessor :guess, :mystery_word, :display_array
 
-  def initialize(guess, mystery_word, mystery_length, display_array)
+  def initialize(guess, mystery_word, display_array)
     @guess          = guess
     @mystery_word   = mystery_word
-    @mystery_length = mystery_length
     @display_array  = display_array
   end
-
 
   def display
     # This creates display array for very first time.
     if @display_array == []
-      @mystery_length.times do
+      @mystery_word.length.times do
         @display_array << "___"
       end
     end
@@ -60,6 +53,7 @@ end
 
 # Should display the letter options to user, then subtract or color out used letters
 # Note, colorize doesn't appear to work because not using print/puts method...
+
 class LetterBank
   attr_accessor :unused_letters, :guesses
 
@@ -71,51 +65,38 @@ class LetterBank
     @unused_letters = ("a".."z").to_a
     @unused_letters.map.with_index do |letter, index|
       if @guesses.include? letter
-        @unused_letters[index] = "__"
+        @unused_letters[index] = "___"
       end
     end
     puts "Choose from these letters"
     print @unused_letters
-    puts ""
+    puts "\n" * 3
   end
 end
-
-#######################
-# User Guess
-#######################
-
-# class UserGuess
-#   attr_accessor
-#
-#   def initialize
-#   end
-# end
-
-
-#######################
-# Used Letters
-#######################
-
-
 
 #######################
 # Turns
 #######################
 
-class Turns
-  attr_accessor :guesses, :mystery_word
+class Turn
+  attr_accessor :guess, :turns
 
-  def initialize(guesses, mystery_word)
-    @guesses      = guesses
+  def initialize (mystery_word)
     @mystery_word = mystery_word
+    @turns = 7
   end
 
-  def win_checker
-    (@guesses - @mystery_word).empty?
+  def turn_checker(guess)
+    puts "Value of guess as param #{guess}"
+    if @mystery_word.include? (guess)
+      @turns = @turns
+      # puts "Value of turns if correct guess #{@turns}"
+    else
+      @turns -= 1
+      # puts "Value of turns if incorrect guess #{@turns}"
+    end
   end
-
 end
-
 
 #######################
 # PLAYER 1
@@ -125,17 +106,21 @@ puts "Welcome to Hangman!"
 puts "Player 1, what is your mystery word?"
 mystery_word = gets.chomp.downcase.chars
 
-p1_input = OriginalWord.new(mystery_word)
-p1_input.mystery_length
+OriginalWord.new(mystery_word)
 
-#puts " " * 9000
+puts " \n" * 100
 
 # Setting up neccessary arrays and variables
 guesses = []
 display_array = []
-turns = 6
 
-while turns > 0
+#######################
+# PLAYER 2
+#######################
+
+game_progress = Turn.new(mystery_word)
+
+while game_progress.turns > 0
 
   # Asks Player 2 for letter, pushes that letter to array
   puts ""
@@ -151,11 +136,11 @@ while turns > 0
 
 
   # Creates blank slot and checks if user guess is right
-  create_blanks = BlankLetters.new(guess, mystery_word, p1_input.mystery_length, display_array)
-  create_blanks.display
+  BlankLetters.new(guess, mystery_word, display_array).display
 
-  # Need to add +1 function for turns. 
-  turns -=1
+  # Need to add +1 function for turns.
+  game_progress.turn_checker(guess)
+
   if (mystery_word - guesses).empty?
     puts ""
     abort "YOU WIN!"
