@@ -1,5 +1,26 @@
 require 'colorize.rb'
 
+#######################
+# Hangman
+#######################
+
+class Hangman
+  attr_accessor :board
+
+  def board
+    board = puts "    -------|\n    #{head}     \\|\n   #{left_arm}#{upper_body}#{right_arm}     |\n    #{lower_body}      |\n   #{left_leg} #{right_leg}     |\n           |\n-----------"
+  end
+
+  head = "0"
+  left_arm = "\\"
+  right_arm = "/"
+  upper_body = "|"
+  lower_body = "|"
+  left_leg = "/"
+  right_leg = "\\"
+
+  
+end
 
 #######################
 # Original Word
@@ -79,7 +100,7 @@ end
 #######################
 
 class Turn
-  attr_accessor :guess, :turns
+  attr_accessor :turns
 
   def initialize (mystery_word)
     @mystery_word = mystery_word
@@ -87,13 +108,10 @@ class Turn
   end
 
   def turn_checker(guess)
-    puts "Value of guess as param #{guess}"
     if @mystery_word.include? (guess)
       @turns = @turns
-      # puts "Value of turns if correct guess #{@turns}"
     else
       @turns -= 1
-      # puts "Value of turns if incorrect guess #{@turns}"
     end
   end
 end
