@@ -21,7 +21,7 @@ class Hangman
 
   # Method redraws board each time called so new variables are printed
   def refresh
-    @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+    @board = "    +----+-|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
     puts @board
   end
 
@@ -144,11 +144,48 @@ class Turn
     @turns = 7
   end
 
-  def turn_checker(guess)
-    if @mystery_word.include? (guess)
-      @turns = @turns
+  def dying
+    @turns -= 1
+  end
+
+  # What I did is to check if anything has been duplicated once, but
+  # I want to know if last guess is a duplicate of existing array
+
+
+  # Checks if player 2 guesses same letter twice
+  # find last element of the array, see if it occurs anytime earlier
+  # in array.
+
+  # slices of array? Give me all but last element, as an array.
+  # finding if
+
+
+  # def no_repeats(guesses, guess)
+  #   if guesses.length > 1
+  #     puts "guesses before slice comparison #{guesses}"
+  #     if guesses[0..-1].include?(guess)
+  #       puts "guesses last element sliced #{guesses.slice!(-1)}"
+  #
+  #
+  #       puts "DEBUG The value of guesses is #{guesses}"
+  #       puts "You already guessed that letter"
+  #       @turns
+  #     end
+  #   end
+  # end
+
+  # Advances game 1 turn closer to death
+  def turn_checker(guess, guesses)
+    if @mystery_word.include?(guess)
+      # no_repeats(guesses, guess)
+      return @turns
+      puts "Debug turns if guess right: #{turns}"
+    elsif
+      # no_repeats(guesses, guess)
+      puts "Debug turns if guess repeated: #{turns}"
     else
-      @turns -= 1
+      dying
+      puts "Debug turns if guess wrong #{turns}"
     end
   end
 end
@@ -182,14 +219,23 @@ while game_progress.turns > 0
   puts ""
   puts "Player 2, what letter would you like to guess?"
   guess = gets.chomp.downcase
-  guesses << guess
+
+  # Creates array only of unique entries.
+  if guesses.include?(guess)
+    next
+  else
+    guesses << guess
+  end
 
   # Display remaining letter options.
   letter_options = LetterBank.new(guesses)
   letter_options.make_bank
 
+  # Check if user has guessed a letter twice
+  #game_progress.no_repeats(guesses)
+
   # Advances games by 1 turn or not depending on guess
-  game_progress.turn_checker(guess)
+  game_progress.turn_checker(guess, guesses)
 
   # Display Hangman image based on turns
   gameboard.draw(game_progress.turns)
@@ -205,6 +251,7 @@ end
 
 puts ""
 puts "Sorry, You died."
+puts "The mystery word was #{mystery_word.join" "}"
 
 
 
