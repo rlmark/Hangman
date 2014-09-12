@@ -109,8 +109,7 @@ end
 # Total Letter Bank
 #######################
 
-# Should display the letter options to user, then subtract or color out used letters
-# Note, colorize doesn't appear to work because not using print/puts method...
+# Should display the letter options to user, then subtract out used letters
 
 class LetterBank
   attr_accessor :unused_letters, :guesses
@@ -127,7 +126,7 @@ class LetterBank
       end
     end
     puts "Choose from these letters"
-    print @unused_letters
+    print @unused_letters.join ", "
     puts "\n" * 3
   end
 end
@@ -148,44 +147,10 @@ class Turn
     @turns -= 1
   end
 
-  # What I did is to check if anything has been duplicated once, but
-  # I want to know if last guess is a duplicate of existing array
-
-
-  # Checks if player 2 guesses same letter twice
-  # find last element of the array, see if it occurs anytime earlier
-  # in array.
-
-  # slices of array? Give me all but last element, as an array.
-  # finding if
-
-
-  # def no_repeats(guesses, guess)
-  #   if guesses.length > 1
-  #     puts "guesses before slice comparison #{guesses}"
-  #     if guesses[0..-1].include?(guess)
-  #       puts "guesses last element sliced #{guesses.slice!(-1)}"
-  #
-  #
-  #       puts "DEBUG The value of guesses is #{guesses}"
-  #       puts "You already guessed that letter"
-  #       @turns
-  #     end
-  #   end
-  # end
-
   # Advances game 1 turn closer to death
-  def turn_checker(guess, guesses)
-    if @mystery_word.include?(guess)
-      # no_repeats(guesses, guess)
-      return @turns
-      puts "Debug turns if guess right: #{turns}"
-    elsif
-      # no_repeats(guesses, guess)
-      puts "Debug turns if guess repeated: #{turns}"
-    else
+  def turn_checker(user_guess)
+    unless @mystery_word.include?(user_guess)
       dying
-      puts "Debug turns if guess wrong #{turns}"
     end
   end
 end
@@ -231,11 +196,8 @@ while game_progress.turns > 0
   letter_options = LetterBank.new(guesses)
   letter_options.make_bank
 
-  # Check if user has guessed a letter twice
-  #game_progress.no_repeats(guesses)
-
   # Advances games by 1 turn or not depending on guess
-  game_progress.turn_checker(guess, guesses)
+  game_progress.turn_checker(guess)
 
   # Display Hangman image based on turns
   gameboard.draw(game_progress.turns)
@@ -251,7 +213,7 @@ end
 
 puts ""
 puts "Sorry, You died."
-puts "The mystery word was #{mystery_word.join" "}"
+puts "The mystery word was #{mystery_word.join}"
 
 
 
