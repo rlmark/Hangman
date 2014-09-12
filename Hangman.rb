@@ -7,19 +7,57 @@ require 'colorize.rb'
 class Hangman
   attr_accessor :board
 
-  def board
-    board = puts "    -------|\n    #{head}     \\|\n   #{left_arm}#{upper_body}#{right_arm}     |\n    #{lower_body}      |\n   #{left_leg} #{right_leg}     |\n           |\n-----------"
+
+  def initialize
+    @head       = " "
+    @left_arm   = " "
+    @right_arm  = " "
+    @upper_body = " "
+    @lower_body = " "
+    @left_leg   = " "
+    @right_leg  = " "
+
+    @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+
+    puts @board
   end
 
-  head = "0"
-  left_arm = "\\"
-  right_arm = "/"
-  upper_body = "|"
-  lower_body = "|"
-  left_leg = "/"
-  right_leg = "\\"
+  def draw(turns)
+    if turns >= 7
+      puts @board
+      puts @head.inspect
+    elsif turns == 6
+      # "the value of turns is #{turns}"
+      @head = 'O'.red
+      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+      puts @board
+    elsif turns == 5
+      @left_arm = "\\".blue
+      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+      puts @board
+    elsif turns == 4
+      @right_arm = "/".yellow
+      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+      puts @board
+    elsif turns == 3
+      @upper_body = "|".cyan
+      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+      puts @board
+    elsif turns == 2
+      @lower_body = "|".green
+      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+      puts @board
+    elsif turns == 1
+      @left_leg = "/".magenta
+      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+      puts @board
+    elsif turns == 0
+      @right_leg = "\\".light_red
+      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+      puts @board
+    end
+  end
 
-  
 end
 
 #######################
@@ -50,6 +88,10 @@ class BlankLetters
     @display_array  = display_array
   end
 
+  # Play around with putting first part of display in separate method.
+  # call it within initialize to set default value once.That way I'm not
+  # Creating a NEW OBJECT each time. Create the new object outside the while
+  # loop once and then call the rest of display on that object.
   def display
     # This creates display array for very first time.
     if @display_array == []
@@ -137,6 +179,7 @@ display_array = []
 #######################
 
 game_progress = Turn.new(mystery_word)
+gameboard = Hangman.new
 
 while game_progress.turns > 0
 
@@ -150,33 +193,90 @@ while game_progress.turns > 0
   letter_options = LetterBank.new(guesses)
   letter_options.make_bank
 
-  # Display Hangman image based on turns
+  # Advances games by 1 turn or not depending on guess
+  game_progress.turn_checker(guess)
 
+  # Display Hangman image based on turns
+  gameboard.draw(game_progress.turns)
 
   # Creates blank slot and checks if user guess is right
   BlankLetters.new(guess, mystery_word, display_array).display
-
-  # Need to add +1 function for turns.
-  game_progress.turn_checker(guess)
 
   if (mystery_word - guesses).empty?
     puts ""
     abort "YOU WIN!"
   end
-
 end
+
 puts ""
 puts "Sorry, You died."
 
 
 
+# @board = ["    -------|",
+#   "    0     \\|",
+#   "   \\|/     |",
+#   "    |      |",
+#   "   / \\     |",
+#   "           |",
+#   "-----------"]
+
+
+
+# def initialize
+#   @body = [@head       = " ",
+#                 @left_arm   = " ",
+#                 @right_arm  = " ",
+#                 @upper_body = " ",
+#                 @lower_body = " ",
+#                 @left_leg   = " ",
+#                 @right_leg  = " "]
+#
+#   @board = "    -------|\n    #{@body[0]}     \\|\n   #{@body[1]}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+#   puts @board
+# end
+#
+# def print(turns)
+#   #maybe try if index + 6
+#
+#
+#   # puts "for printing board turns is #{turns}"
+#
+#   #
+#   # if turns.to_i >= 7
+#   #   puts @board
+#   # elsif turns == 6
+#   #   # puts "the value of turns is #{turns}"
+#   #   @head = 'O'
+#   #   puts @board
+#   # elsif turns == 5
+#   #   @left_arm == "\\"
+#   #   print @left_arm
+#   #   print "The value of turns is #{turns}"
+#   # elsif turns == 4
+#   #   @right_arm == "/"
+#   # elsif turns == 3
+#   #   @upper_body == "|"
+#   # elsif turns == 2
+#   #   @lower_body == "|"
+#   # elsif turns == 1
+#   #   @left_leg == "/"
+#   # elsif turns == 0
+#   #   @right_leg == "\\"
+#
+# end
 
 
 
 
 
-
-
+# @body_parts.each_with_index do |part, index|
+#   unless turns == @body_parts[index + 6]
+#     part = " "
+#     @body_parts[index] = part
+#     puts @board
+#   end
+# end
 
 
 
