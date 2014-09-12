@@ -7,7 +7,6 @@ require 'colorize.rb'
 class Hangman
   attr_accessor :board
 
-
   def initialize
     @head       = " "
     @left_arm   = " "
@@ -17,47 +16,43 @@ class Hangman
     @left_leg   = " "
     @right_leg  = " "
 
-    @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
+    refresh
+  end
 
+  # Method redraws board each time called so new variables are printed
+  def refresh
+    @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
     puts @board
   end
 
+  # HALP! This is bad, make key into turns and body part into hash?
   def draw(turns)
     if turns >= 7
-      puts @board
-      puts @head.inspect
+      refresh
     elsif turns == 6
       # "the value of turns is #{turns}"
       @head = 'O'.red
-      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
-      puts @board
+      refresh
     elsif turns == 5
       @left_arm = "\\".blue
-      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
-      puts @board
+      refresh
     elsif turns == 4
       @right_arm = "/".yellow
-      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
-      puts @board
+      refresh
     elsif turns == 3
       @upper_body = "|".cyan
-      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
-      puts @board
+      refresh
     elsif turns == 2
       @lower_body = "|".green
-      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
-      puts @board
+      refresh
     elsif turns == 1
       @left_leg = "/".magenta
-      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
-      puts @board
+      refresh
     elsif turns == 0
       @right_leg = "\\".light_red
-      @board = "    -------|\n    #{@head}     \\|\n   #{@left_arm}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
-      puts @board
+      refresh
     end
   end
-
 end
 
 #######################
@@ -224,7 +219,7 @@ puts "Sorry, You died."
 
 
 # def initialize
-#   @body = [@head       = " ",
+#   @body =       [@head       = " ",
 #                 @left_arm   = " ",
 #                 @right_arm  = " ",
 #                 @upper_body = " ",
@@ -277,9 +272,6 @@ puts "Sorry, You died."
 #     puts @board
 #   end
 # end
-
-
-
 
 
 # @display_array.map.with_index { |letter, index|
