@@ -77,23 +77,23 @@ end
 class BlankLetters
   attr_accessor :guess, :mystery_word, :display_array
 
-  def initialize(guess, mystery_word, display_array)
-    @guess          = guess
+  def initialize(mystery_word)#, display_array, guess,
     @mystery_word   = mystery_word
-    @display_array  = display_array
+    @display_array  = Array.new(mystery_word.length, "___")
   end
 
   # Play around with putting first part of display in separate method.
   # call it within initialize to set default value once.That way I'm not
   # Creating a NEW OBJECT each time. Create the new object outside the while
   # loop once and then call the rest of display on that object.
-  def display
-    # This creates display array for very first time.
-    if @display_array == []
-      @mystery_word.length.times do
-        @display_array << "___"
-      end
-    end
+  def display(guess)
+    # # This creates display array for very first time.
+    # if @display_array == []
+    #   @mystery_word.length.times do
+    #     @display_array << "___"
+    #   end
+    # end
+    @guess = guess
 
     # This creates display array with user guess input at index
     @mystery_word.each_with_index do |letter, index|
@@ -177,7 +177,7 @@ display_array = []
 
 game_progress = Turn.new(mystery_word)
 gameboard = Hangman.new
-
+blanks = BlankLetters.new(mystery_word)
 while game_progress.turns > 0
 
   # Asks Player 2 for letter, pushes that letter to array
@@ -203,7 +203,7 @@ while game_progress.turns > 0
   gameboard.draw(game_progress.turns)
 
   # Creates blank slot and checks if user guess is right
-  BlankLetters.new(guess, mystery_word, display_array).display
+  blanks.display(guess) #, display_array
 
   if (mystery_word - guesses).empty?
     puts ""
