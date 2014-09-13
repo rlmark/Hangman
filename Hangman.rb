@@ -75,29 +75,17 @@ end
 # and uncover them as user guesses
 
 class BlankLetters
-  attr_accessor :guess, :mystery_word, :display_array
+  attr_accessor :mystery_word, :display_array
 
-  def initialize(mystery_word)#, display_array, guess,
+  def initialize(mystery_word)
     @mystery_word   = mystery_word
     @display_array  = Array.new(mystery_word.length, "___")
   end
 
-  # Play around with putting first part of display in separate method.
-  # call it within initialize to set default value once.That way I'm not
-  # Creating a NEW OBJECT each time. Create the new object outside the while
-  # loop once and then call the rest of display on that object.
   def display(guess)
-    # # This creates display array for very first time.
-    # if @display_array == []
-    #   @mystery_word.length.times do
-    #     @display_array << "___"
-    #   end
-    # end
-    @guess = guess
-
     # This creates display array with user guess input at index
     @mystery_word.each_with_index do |letter, index|
-      if letter == @guess
+      if letter == guess
         @display_array[index] = letter
       end
     end
@@ -135,6 +123,8 @@ end
 # Turns
 #######################
 
+# Turn class advances game
+
 class Turn
   attr_accessor :turns
 
@@ -159,63 +149,66 @@ end
 # PLAYER 1
 #######################
 
-puts "Welcome to Hangman!"
-puts "Player 1, what is your mystery word?"
-mystery_word = gets.chomp.downcase.chars
+def gameplay
 
-OriginalWord.new(mystery_word)
+  puts "Welcome to Hangman!"
+  puts "Player 1, what is your mystery word?"
+  mystery_word = gets.chomp.downcase.chars
 
-puts " \n" * 100
+  OriginalWord.new(mystery_word)
 
-# Setting up neccessary arrays and variables
-guesses = []
-display_array = []
+  puts " \n" * 100
 
-#######################
-# PLAYER 2
-#######################
+  #######################
+  # PLAYER 2
+  #######################
 
-game_progress = Turn.new(mystery_word)
-gameboard = Hangman.new
-blanks = BlankLetters.new(mystery_word)
-while game_progress.turns > 0
+  # Setting up neccessary arrays instantiating objects
 
-  # Asks Player 2 for letter, pushes that letter to array
-  puts ""
-  puts "Player 2, what letter would you like to guess?"
-  guess = gets.chomp.downcase
+  guesses = []
+  game_progress = Turn.new(mystery_word)
+  gameboard = Hangman.new
+  blanks = BlankLetters.new(mystery_word)
 
-  # Creates array only of unique entries.
-  if guesses.include?(guess)
-    next
-  else
-    guesses << guess
-  end
+  while game_progress.turns > 0
 
-  # Display remaining letter options.
-  letter_options = LetterBank.new(guesses)
-  letter_options.make_bank
-
-  # Advances games by 1 turn or not depending on guess
-  game_progress.turn_checker(guess)
-
-  # Display Hangman image based on turns
-  gameboard.draw(game_progress.turns)
-
-  # Creates blank slot and checks if user guess is right
-  blanks.display(guess) #, display_array
-
-  if (mystery_word - guesses).empty?
+    # Asks Player 2 for letter, pushes that letter to array
     puts ""
-    abort "YOU WIN!"
+    puts "Player 2, what letter would you like to guess?"
+    guess = gets.chomp.downcase
+
+    # Creates array only of unique entries.
+    if guesses.include?(guess)
+      next
+    else
+      guesses << guess
+    end
+
+    # Display remaining letter options.
+    letter_options = LetterBank.new(guesses)
+    letter_options.make_bank
+
+    # Advances games by 1 turn or not depending on guess
+    game_progress.turn_checker(guess)
+
+    # Display Hangman image based on turns
+    gameboard.draw(game_progress.turns)
+
+    # Creates blank slot and checks if user guess is right
+    blanks.display(guess)
+
+    if (mystery_word - guesses).empty?
+      puts ""
+      abort "YOU WIN!"
+    end
   end
+
+  puts ""
+  puts "Sorry, You died."
+  puts "The mystery word was #{mystery_word.join}"
 end
 
-puts ""
-puts "Sorry, You died."
-puts "The mystery word was #{mystery_word.join}"
-
-
+gameplay
 
 # @board = ["    -------|",
 #   "    0     \\|",
