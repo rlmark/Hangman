@@ -15,7 +15,6 @@ class Hangman
     @lower_body = " "
     @left_leg   = " "
     @right_leg  = " "
-
     refresh
   end
 
@@ -26,6 +25,7 @@ class Hangman
   end
 
   # HALP! This is bad, make key into turns and body part into hash?
+  # if turns == key, put value. and refresh. 
   def draw(turns)
     if turns >= 7
       refresh
@@ -75,21 +75,21 @@ end
 # and uncover them as user guesses
 
 class BlankLetters
-  attr_accessor :mystery_word, :display_array
+  attr_accessor :display_array
 
   def initialize(mystery_word)
     @mystery_word   = mystery_word
-    @display_array  = Array.new(mystery_word.length, "___")
+    @display_array  = Array.new(mystery_word.length, "__")
   end
 
+  # This creates display array with user guess input at index
   def display(guess)
-    # This creates display array with user guess input at index
     @mystery_word.each_with_index do |letter, index|
       if letter == guess
         @display_array[index] = letter
       end
     end
-    print @display_array
+    print @display_array.join " "
   end
 end
 
@@ -97,20 +97,17 @@ end
 # Total Letter Bank
 #######################
 
-# Should display the letter options to user, then subtract out used letters
+# LetterBank should display the letter options to user,
+# then subtract out used letters
 
 class LetterBank
-  attr_accessor :unused_letters, :guesses
+  attr_accessor :unused_letters
 
-  def initialize(guesses)
-    @guesses = guesses
-  end
-
-  def make_bank
+  def make_bank(guesses)
     @unused_letters = ("a".."z").to_a
     @unused_letters.map.with_index do |letter, index|
-      if @guesses.include? letter
-        @unused_letters[index] = "___"
+      if guesses.include? letter
+        @unused_letters[index] = "__"
       end
     end
     puts "Choose from these letters"
@@ -137,7 +134,7 @@ class Turn
     @turns -= 1
   end
 
-  # Advances game 1 turn closer to death
+  # Advances game 1 turn closer to death for wrong answers
   def turn_checker(user_guess)
     unless @mystery_word.include?(user_guess)
       dying
@@ -169,24 +166,24 @@ def gameplay
   game_progress = Turn.new(mystery_word)
   gameboard = Hangman.new
   blanks = BlankLetters.new(mystery_word)
+  letter_options = LetterBank.new
 
   while game_progress.turns > 0
 
-    # Asks Player 2 for letter, pushes that letter to array
-    puts ""
+    puts " "
     puts "Player 2, what letter would you like to guess?"
     guess = gets.chomp.downcase
 
-    # Creates array only of unique entries.
+    # Creates array of unique entries only.
     if guesses.include?(guess)
+      puts "You already guessed that letter"
       next
     else
       guesses << guess
     end
 
     # Display remaining letter options.
-    letter_options = LetterBank.new(guesses)
-    letter_options.make_bank
+    letter_options.make_bank(guesses)
 
     # Advances games by 1 turn or not depending on guess
     game_progress.turn_checker(guess)
@@ -198,7 +195,7 @@ def gameplay
     blanks.display(guess)
 
     if (mystery_word - guesses).empty?
-      puts ""
+      puts " "
       abort "YOU WIN!"
     end
   end
