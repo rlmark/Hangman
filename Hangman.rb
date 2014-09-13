@@ -8,13 +8,13 @@ class Hangman
   attr_accessor :board
 
   def initialize
-    @head       = " "
-    @left_arm   = " "
-    @right_arm  = " "
-    @upper_body = " "
-    @lower_body = " "
-    @left_leg   = " "
-    @right_leg  = " "
+    @head       = "0".hide
+    @left_arm   = "\\".hide
+    @right_arm  = "/".hide
+    @upper_body = "|".hide
+    @lower_body = "|".hide
+    @left_leg   = "/".hide
+    @right_leg  = "\\".hide
     refresh
   end
 
@@ -25,32 +25,33 @@ class Hangman
   end
 
   # HALP! This is bad, make key into turns and body part into hash?
-  # if turns == key, put value. and refresh. 
+  # if turns == key, put value. and refresh.
+
   def draw(turns)
     if turns >= 7
-      refresh
+     refresh
     elsif turns == 6
-      # "the value of turns is #{turns}"
-      @head = 'O'.red
-      refresh
+     # "the value of turns is #{turns}"
+     @head = 'O'.red
+     refresh
     elsif turns == 5
-      @left_arm = "\\".blue
-      refresh
+     @left_arm = "\\".blue
+     refresh
     elsif turns == 4
-      @right_arm = "/".yellow
-      refresh
+     @right_arm = "/".yellow
+     refresh
     elsif turns == 3
-      @upper_body = "|".cyan
-      refresh
+     @upper_body = "|".cyan
+     refresh
     elsif turns == 2
-      @lower_body = "|".green
-      refresh
+     @lower_body = "|".green
+     refresh
     elsif turns == 1
-      @left_leg = "/".magenta
-      refresh
+     @left_leg = "/".magenta
+     refresh
     elsif turns == 0
-      @right_leg = "\\".light_red
-      refresh
+     @right_leg = "\\".light_red
+     refresh
     end
   end
 end
@@ -80,6 +81,7 @@ class BlankLetters
   def initialize(mystery_word)
     @mystery_word   = mystery_word
     @display_array  = Array.new(mystery_word.length, "__")
+    print @display_array.join " "
   end
 
   # This creates display array with user guess input at index
@@ -90,6 +92,10 @@ class BlankLetters
       end
     end
     print @display_array.join " "
+  end
+
+  def space(guesses)
+    guesses
   end
 end
 
@@ -103,16 +109,20 @@ end
 class LetterBank
   attr_accessor :unused_letters
 
-  def make_bank(guesses)
+  def initialize
     @unused_letters = ("a".."z").to_a
+    print @unused_letters.join ", "
+  end
+
+  def make_bank(guesses)
     @unused_letters.map.with_index do |letter, index|
       if guesses.include? letter
         @unused_letters[index] = "__"
       end
     end
-    puts "Choose from these letters"
+    puts "\nChoose from these letters"
     print @unused_letters.join ", "
-    puts "\n" * 3
+    puts "\n"
   end
 end
 
@@ -130,23 +140,20 @@ class Turn
     @turns = 7
   end
 
-  def dying
-    @turns -= 1
-  end
-
   # Advances game 1 turn closer to death for wrong answers
   def turn_checker(user_guess)
     unless @mystery_word.include?(user_guess)
-      dying
+      @turns -= 1
     end
   end
 end
 
-#######################
-# PLAYER 1
-#######################
-
+# Function for getting game started.
 def gameplay
+
+  #######################
+  # PLAYER 1
+  #######################
 
   puts "Welcome to Hangman!"
   puts "Player 1, what is your mystery word?"
@@ -164,9 +171,10 @@ def gameplay
 
   guesses = []
   game_progress = Turn.new(mystery_word)
+  letter_options = LetterBank.new
+  puts "\n"
   gameboard = Hangman.new
   blanks = BlankLetters.new(mystery_word)
-  letter_options = LetterBank.new
 
   while game_progress.turns > 0
 
@@ -177,6 +185,9 @@ def gameplay
     # Creates array of unique entries only.
     if guesses.include?(guess)
       puts "You already guessed that letter"
+      next
+    elsif guess.length > 1
+      puts "You can only guess one letter at a time"
       next
     else
       guesses << guess
@@ -196,16 +207,41 @@ def gameplay
 
     if (mystery_word - guesses).empty?
       puts " "
-      abort "YOU WIN!"
+      abort "YOU WIN!".green
     end
   end
 
-  puts ""
-  puts "Sorry, You died."
+  puts " "
+  puts "Sorry, You died.".magenta
   puts "The mystery word was #{mystery_word.join}"
 end
 
 gameplay
+
+# @body_parts =  {6 => @head = "0".red,
+#               5 => @left_arm = "\\".blue,
+#               4 => @right_arm = "/".yellow,
+#               3 => @upper_body = "|".cyan,
+#               2 => @lower_body = "|".green,
+#               1 => @left_leg = "/".magenta,
+#               0 => @right_leg = "\\".light_red}
+
+
+# # I think this is the problem, I'm redefining it here...
+# # maybe make key be turns, and values be " " and "0" in array
+# # replace value of @head with bodyparts[key][0] keys etc.
+# # if turns = key, value = body_parts[key][1]. NVMD this wont work
+#
+# puts turns
+#
+# @body_parts.each do |key, value|
+#   if turns == key
+#     return value
+#     puts "This is the value of the key if turns == key #{key[value]}"
+#   end
+# end
+# refresh
+# end
 
 # @board = ["    -------|",
 #   "    0     \\|",
