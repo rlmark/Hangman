@@ -75,12 +75,13 @@ end
 # The goal is to print out a series of hidden letters
 # and uncover them as user guesses
 
-class BlankLetters
+class LetterReveal
   attr_accessor :display_array
 
   def initialize(mystery_word)
     @mystery_word   = mystery_word
     @display_array  = Array.new(mystery_word.length, "__")
+    space
     print @display_array.join " "
   end
 
@@ -89,13 +90,20 @@ class BlankLetters
     @mystery_word.each_with_index do |letter, index|
       if letter == guess
         @display_array[index] = letter
+      elsif letter == " "
+        
       end
     end
     print @display_array.join " "
   end
 
-  def space(guesses)
-    guesses
+  # Checks for spaces in mystery word, adjusts display accordingly
+  def space
+    @mystery_word.each_with_index do |letter, index|
+      if letter == " "
+        @display_array[index] = " "
+      end
+    end
   end
 end
 
@@ -174,7 +182,7 @@ def gameplay
   letter_options = LetterBank.new
   puts "\n"
   gameboard = Hangman.new
-  blanks = BlankLetters.new(mystery_word)
+  blanks = LetterReveal.new(mystery_word)
 
   while game_progress.turns > 0
 
@@ -203,7 +211,10 @@ def gameplay
     gameboard.draw(game_progress.turns)
 
     # Creates blank slot and checks if user guess is right
+    blanks.space(guess)
     blanks.display(guess)
+
+
 
     if (mystery_word - guesses).empty?
       puts " "
