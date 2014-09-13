@@ -24,9 +24,7 @@ class Hangman
     puts @board
   end
 
-  # HALP! This is bad, make key into turns and body part into hash?
-  # if turns == key, put value. and refresh.
-
+  # HALP! This is bad, not sure how to make it shorter.
   def draw(turns)
     if turns >= 7
      refresh
@@ -81,13 +79,13 @@ class LetterReveal
   def initialize(mystery_word)
     @mystery_word   = mystery_word
     @display_array  = Array.new(mystery_word.length, "__")
-    space
+    space_checker
     print @display_array.join " "
   end
 
   # This creates display array with user guess input at index
   def display(guess)
-    space
+    space_checker
     @mystery_word.each_with_index do |letter, index|
       if letter == guess
         @display_array[index] = letter
@@ -97,7 +95,7 @@ class LetterReveal
   end
 
   # Checks for spaces in mystery word, adjusts display accordingly
-  def space
+  def space_checker
     @mystery_word.each_with_index do |letter, index|
       if letter == " "
         @display_array[index] = " "
@@ -185,7 +183,7 @@ def gameplay
 
   while game_progress.turns > 0
 
-    puts " "
+    puts "\n"
     puts "Player 2, what letter would you like to guess?"
     guess = gets.chomp.downcase
 
@@ -214,7 +212,7 @@ def gameplay
 
     # Wincode
     if (mystery_word - [" "] - guesses).empty?
-      puts " "
+      puts "\n"
       abort "YOU WIN!".green
     end
   end
@@ -225,131 +223,3 @@ def gameplay
 end
 
 gameplay
-
-# @body_parts =  {6 => @head = "0".red,
-#               5 => @left_arm = "\\".blue,
-#               4 => @right_arm = "/".yellow,
-#               3 => @upper_body = "|".cyan,
-#               2 => @lower_body = "|".green,
-#               1 => @left_leg = "/".magenta,
-#               0 => @right_leg = "\\".light_red}
-
-
-# # I think this is the problem, I'm redefining it here...
-# # maybe make key be turns, and values be " " and "0" in array
-# # replace value of @head with bodyparts[key][0] keys etc.
-# # if turns = key, value = body_parts[key][1]. NVMD this wont work
-#
-# puts turns
-#
-# @body_parts.each do |key, value|
-#   if turns == key
-#     return value
-#     puts "This is the value of the key if turns == key #{key[value]}"
-#   end
-# end
-# refresh
-# end
-
-# @board = ["    -------|",
-#   "    0     \\|",
-#   "   \\|/     |",
-#   "    |      |",
-#   "   / \\     |",
-#   "           |",
-#   "-----------"]
-
-
-
-# def initialize
-#   @body =       [@head       = " ",
-#                 @left_arm   = " ",
-#                 @right_arm  = " ",
-#                 @upper_body = " ",
-#                 @lower_body = " ",
-#                 @left_leg   = " ",
-#                 @right_leg  = " "]
-#
-#   @board = "    -------|\n    #{@body[0]}     \\|\n   #{@body[1]}#{@upper_body}#{@right_arm}     |\n    #{@lower_body}      |\n   #{@left_leg} #{@right_leg}     |\n           |\n-----------"
-#   puts @board
-# end
-#
-# def print(turns)
-#   #maybe try if index + 6
-#
-#
-#   # puts "for printing board turns is #{turns}"
-#
-#   #
-#   # if turns.to_i >= 7
-#   #   puts @board
-#   # elsif turns == 6
-#   #   # puts "the value of turns is #{turns}"
-#   #   @head = 'O'
-#   #   puts @board
-#   # elsif turns == 5
-#   #   @left_arm == "\\"
-#   #   print @left_arm
-#   #   print "The value of turns is #{turns}"
-#   # elsif turns == 4
-#   #   @right_arm == "/"
-#   # elsif turns == 3
-#   #   @upper_body == "|"
-#   # elsif turns == 2
-#   #   @lower_body == "|"
-#   # elsif turns == 1
-#   #   @left_leg == "/"
-#   # elsif turns == 0
-#   #   @right_leg == "\\"
-#
-# end
-
-
-
-
-
-# @body_parts.each_with_index do |part, index|
-#   unless turns == @body_parts[index + 6]
-#     part = " "
-#     @body_parts[index] = part
-#     puts @board
-#   end
-# end
-
-
-# @display_array.map.with_index { |letter, index|
-#     if letter = @guess
-#       @display_array[index] = @guess
-#       print @display_array
-#     else
-#       puts ""
-#       #print @display_array
-#     end
-#   }
-#   #print @display_array
-  # @display_array.collect { |letter, index|
-  #     if letter == @guess
-  #       @display[index] = @guess
-  #       print @display_array
-  #     else
-  #       puts ""
-  #       #print @display_array
-  #       puts ""
-  #     end
-  #     print @display_array
-  #   }
-
-    #puts "DEBUG: Is letter showing up " + @guess
-    #   # put the guess into the new array, at that same index.
-    #   @mystery_word.each do |letter|
-    #     if @guess == letter
-    #     end
-    #   end
-    # end
-    #   # Need to run through array of chars and see guess matches, if guess matches,
-    #   # then print out unhidden version of guess.
-    #   #  puts letter
-    #
-    #   # Try map with index
-    #
-    #   #displays the unguessed letters as slots.
