@@ -87,11 +87,10 @@ class LetterReveal
 
   # This creates display array with user guess input at index
   def display(guess)
+    space
     @mystery_word.each_with_index do |letter, index|
       if letter == guess
         @display_array[index] = letter
-      elsif letter == " "
-        
       end
     end
     print @display_array.join " "
@@ -211,12 +210,10 @@ def gameplay
     gameboard.draw(game_progress.turns)
 
     # Creates blank slot and checks if user guess is right
-    blanks.space(guess)
     blanks.display(guess)
 
-
-
-    if (mystery_word - guesses).empty?
+    # Wincode
+    if (mystery_word - [" "] - guesses).empty?
       puts " "
       abort "YOU WIN!".green
     end
