@@ -25,31 +25,32 @@ class Hangman
   end
 
   # HALP! This is bad, not sure how to make it shorter.
+  # thought about making a hash and then reassigning them.
   def draw(turns)
-    if turns >= 7
-     refresh
-    elsif turns == 6
-     # "the value of turns is #{turns}"
-     @head = 'O'.red
-     refresh
-    elsif turns == 5
-     @left_arm = "\\".blue
-     refresh
-    elsif turns == 4
-     @right_arm = "/".yellow
-     refresh
-    elsif turns == 3
-     @upper_body = "|".cyan
-     refresh
-    elsif turns == 2
-     @lower_body = "|".green
-     refresh
-    elsif turns == 1
-     @left_leg = "/".magenta
-     refresh
-    elsif turns == 0
-     @right_leg = "\\".light_red
-     refresh
+    case turns
+    when 7
+      refresh
+    when 6
+      @head = 'O'.red
+      refresh
+    when 5
+      @left_arm = "\\".blue
+      refresh
+    when 4
+      @right_arm = "/".yellow
+      refresh
+    when 3
+      @upper_body = "|".cyan
+      refresh
+    when 2
+      @lower_body = "|".green
+      refresh
+    when 1
+      @left_leg = "/".magenta
+      refresh
+    when 0
+      @right_leg = "\\".light_red
+      refresh
     end
   end
 end
@@ -67,7 +68,7 @@ class OriginalWord
 end
 
 #######################
-# Blank Letter Slot
+# Reveal the Right Letters
 #######################
 
 # The goal is to print out a series of hidden letters
@@ -172,7 +173,7 @@ def gameplay
   # PLAYER 2
   #######################
 
-  # Setting up neccessary arrays instantiating objects
+  # Setting up neccessary array instantiating objects
 
   guesses = []
   game_progress = Turn.new(mystery_word)
@@ -217,7 +218,7 @@ def gameplay
     end
   end
 
-  puts " "
+  puts "\n"
   puts "Sorry, You died.".magenta
   puts "The mystery word was #{mystery_word.join}"
 end
